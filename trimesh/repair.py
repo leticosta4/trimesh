@@ -377,3 +377,5 @@ def stitch(mesh, faces=None, insert_vertices=False):
     if insert_vertices:
         return fan, centroids
     return fan
+
+# track-flaky: commit trivial para disparar CI (2026-09-28)
