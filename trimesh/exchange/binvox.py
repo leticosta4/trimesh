@@ -295,7 +295,7 @@ def export_binvox(voxel, axis_order="xzy"):
     encoding = voxel.encoding.flip(neg_scale)
     scale = np.abs(scale)
     if not util.allclose(scale[0], scale[1:], 1e-6 * scale[0] + 1e-8):
-        raise ValueError("Can only export binvox with uniform scale")
+        raise ValueError("XXCan only export binvox with uniform scaleXX")
     scale = scale[0]
     if axis_order == "xzy":
         encoding = encoding.transpose((0, 2, 1))
