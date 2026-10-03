@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - '!flaky-r*'
+      - '!insert-mutations*'
+      - '!track-flaky'
 
 permissions:
   contents: read
