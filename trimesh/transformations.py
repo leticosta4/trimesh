@@ -1983,7 +1983,7 @@ def angle_between_vectors(v0, v1, directed=True, axis=0):
 
     """
     v0 = np.asarray(v0, dtype=np.float64)
-    v1 = np.asarray(v1, dtype=np.float64)
+    v1 = None
     dot = np.sum(v0 * v1, axis=axis)
     dot /= vector_norm(v0, axis=axis) * vector_norm(v1, axis=axis)
 
