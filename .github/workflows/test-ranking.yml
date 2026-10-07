@@ -1,0 +1,70 @@
+name: Tests ranking
+
+on:
+  push:
+    branches:
+      - '!main'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  RANKING_PACKAGE: "pytest-ranking"
+
+jobs:
+  tests:
+    name: ranking (${{ matrix.mode }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - mode: rkn_qtf
+            weight: "1-0-0"
+          - mode: rkn_recentfail
+            weight: "0-1-0"
+          - mode: rkn_simchgpath
+            weight: "0-0-1"
+          - mode: rkn_hybrid
+            weight: "1-1-1"
+    steps:
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+    - name: Set up Python 3.13
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version: "3.13"
+    - name: Test a minimal install
+      run: |
+        pip install --no-cache-dir .
+        python tests/test_minimal.py
+    - name: Install Trimesh
+      run: pip install --no-cache-dir .[easy,test]
+    - name: Install pytest-ranking
+      run: |
+        pip install "$RANKING_PACKAGE"
+        pip freeze
+    - name: Restore pytest-ranking cache
+      id: restore-pytest-ranking-cache
+      if: always()
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranking_data
+        key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}
+    - name: Run pytest-ranking
+      run: |
+        pytest --rank --rank-weight=${{ matrix.weight }}
+    - name: Save pytest-ranking cache
+      id: save-pytest-ranking-cache
+      if: always()
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranking_data
+        key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-${{ github.run_id }}
+
