@@ -59,7 +59,7 @@ jobs:
         key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}
     - name: Run pytest-ranking
       run: |
-        pytest --regsmart --no-rank
+        pytest --rank --rank-weight=${{ matrix.weight }}
     - name: Save pytest-ranking cache
       id: save-pytest-ranking-cache
       if: always()

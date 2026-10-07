@@ -60,7 +60,7 @@ jobs:
           pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-
     - name: Run pytest-regsmart
       run: |
-        pytest --regsmart --no-rank
+        pytest --regsmart --ranking-weight=${{ matrix.weight }}
     - name: Save pytest-regsmart cache
       if: always()
       uses: actions/cache/save@v4
