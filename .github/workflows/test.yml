@@ -31,7 +31,17 @@ jobs:
         python tests/test_minimal.py
     - name: Install Trimesh
       run: pip install --no-cache-dir .[easy,test]
+    - name: Install reportlog
+      run: pip install pytest-reportlog
     - name: Run Pytest
       run: |
-        pytest -p no:pytest-regsmart -p no:pytest-ranking
+        pytest --report-log=reportlog.jsonl
+    - name: Upload report-log
+      if: ${{ !cancelled() }} # com mutante o step de teste falha; sem isso o arquivo não sobe
+      uses: actions/upload-artifact@v4
+      with:
+        name: reportlog-main
+        path: reportlog.jsonl
+        retention-days: 14
+        if-no-files-found: warn
 
