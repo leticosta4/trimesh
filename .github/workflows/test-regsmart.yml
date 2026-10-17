@@ -50,6 +50,8 @@ jobs:
       run: |
         pip install "$REGSMART_PACKAGE"
         pip freeze
+    - name: Install reportlog
+      run: pip install pytest-reportlog
     - name: Restore pytest-regsmart cache
       id: restore-pytest-regsmart-cache
       uses: actions/cache/restore@v4
@@ -60,11 +62,19 @@ jobs:
           pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-
     - name: Run pytest-regsmart
       run: |
-        pytest --regsmart --ranking-weight=${{ matrix.weight }}
+        pytest --report-log=reportlog.jsonl --regsmart --ranking-weight=${{ matrix.weight }} 
     - name: Save pytest-regsmart cache
       if: always()
       uses: actions/cache/save@v4
       with:
         path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranked_selection_data
         key: pytest-regsmart-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-${{ github.run_id }}
+    - name: Upload report-log
+      if: ${{ !cancelled() }} # com mutante o step de teste falha; sem isso o arquivo não sobe
+      uses: actions/upload-artifact@v4
+      with:
+        name: reportlog-${{ matrix.mode }}
+        path: reportlog.jsonl
+        retention-days: 14
+        if-no-files-found: warn
 
