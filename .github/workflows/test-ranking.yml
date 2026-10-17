@@ -50,6 +50,8 @@ jobs:
       run: |
         pip install "$RANKING_PACKAGE"
         pip freeze
+    - name: Install reportlog
+      run: pip install pytest-reportlog
     - name: Restore pytest-ranking cache
       id: restore-pytest-ranking-cache
       if: always()
@@ -59,7 +61,7 @@ jobs:
         key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}
     - name: Run pytest-ranking
       run: |
-        pytest --rank --rank-weight=${{ matrix.weight }}
+        pytest --report-log=reportlog.jsonl --rank --rank-weight=${{ matrix.weight }} 
     - name: Save pytest-ranking cache
       id: save-pytest-ranking-cache
       if: always()
@@ -67,4 +69,12 @@ jobs:
       with:
         path: ${{ github.workspace }}/.pytest_cache/v/pytest_ranking_data
         key: pytest-ranking-cache-${{ github.workflow }}-${{ runner.os }}-${{ matrix.mode }}-${{ github.run_id }}
+    - name: Upload report-log
+      if: ${{ !cancelled() }} # com mutante o step de teste falha; sem isso o arquivo não sobe
+      uses: actions/upload-artifact@v4
+      with:
+        name: reportlog-${{ matrix.mode }}
+        path: reportlog.jsonl
+        retention-days: 14
+        if-no-files-found: warn
 
