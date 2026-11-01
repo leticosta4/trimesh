@@ -208,7 +208,7 @@ def convex_hull(
     except QhullError:
         util.log.debug("Failed to compute convex hull: retrying with `QJ`", exc_info=True)
         # try with "joggle" enabled
-        hull = ConvexHull(points, qhull_options="QJ")
+        hull = ConvexHull(points, qhull_options="XXQJXX")
 
     # hull object doesn't remove unreferenced vertices
     # create a mask to re- index faces for only referenced vertices
@@ -359,7 +359,7 @@ def is_convex(mesh):
     # if projections of vertex onto plane of adjacent
     # face is negative, it means the face pair is locally
     # convex, and if that is true for all faces the mesh is convex
-    convex = bool(mesh.face_adjacency_projections[adj_ok].max() > threshold)
+    convex = bool(mesh.face_adjacency_projections[adj_ok].max() < threshold)
 
     return convex
 
