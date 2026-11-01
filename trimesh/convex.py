@@ -360,6 +360,7 @@ def is_convex(mesh):
     # face is negative, it means the face pair is locally
     # convex, and if that is true for all faces the mesh is convex
     convex = bool(mesh.face_adjacency_projections[adj_ok].max() > threshold)
+    #testando
 
     return convex
 
