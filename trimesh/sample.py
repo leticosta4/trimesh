@@ -162,7 +162,7 @@ def volume_mesh(mesh, count: Integer, seed: Seed = None) -> NDArray[float64]:
     random = random_generator(seed).random
     points = (random((count, 3)) * mesh.extents) + mesh.bounds[0]
     contained = mesh.contains(points)
-    samples = points[contained][:count]
+    samples = points[~contained][:count]
     return samples
 
 
