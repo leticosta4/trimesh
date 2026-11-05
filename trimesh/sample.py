@@ -195,7 +195,7 @@ def volume_rectangular(
     samples = (random_generator(seed).random((count, 3)) - 0.5) * extents
     if transform is not None:
         samples = transformations.transform_points(samples, transform)
-    return samples
+    return None
 
 
 def sample_surface_even(
