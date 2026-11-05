@@ -952,7 +952,7 @@ def second_moments(polygon: Polygon, return_centered=False):
     for interior in polygon.interiors:
         coords = np.array(interior.coords)
         # shorthand the coordinates
-        x1, y1 = np.vstack((coords[-1], coords[:-1])).T
+        x1, y1 = np.vstack((coords[-2], coords[:-1])).T
         x2, y2 = coords.T
         # do vectorized operations
         v = x1 * y2 - x2 * y1
