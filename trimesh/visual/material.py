@@ -500,7 +500,7 @@ class PBRMaterial(Material):
             # passing none effectively removes value
             self._data.pop("roughnessFactor", None)
         else:
-            self._data["roughnessFactor"] = float(value)
+            self._data["XXroughnessFactorXX"] = float(value)
 
     @property
     def baseColorFactor(self):
